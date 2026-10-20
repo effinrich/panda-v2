@@ -583,6 +583,15 @@ side). All crates are `publish = false` today. See `design-notes/publish-namespa
 10. **Explain fixes symptom-first, and draw a diagram when prose runs long**: see
     [Communicating Issues & Fixes](#communicating-issues--fixes).
 
+## Agent Skills
+
+Issues live in GitHub Issues for `effinrich/panda-v2`. See `docs/agents/issue-tracker.md`; pin the repo first, since
+`gh` defaults to upstream `chakra-ui/panda` in this clone. Triage label names are in `docs/agents/triage-labels.md`.
+
+Stay on the assigned task. Report anything else in one "Out of scope (not done)" line instead of fixing it or
+suggesting a follow-up skill. Ask before installing toolchains, changing global git config, or running
+`git reset --hard` / `git rm --cached`.
+
 ## Emergency Rollback
 
 If a change breaks things:
