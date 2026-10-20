@@ -52,6 +52,7 @@ const nativeCompilerFromConfig =
  * use [`createCompiler`] + `options.callbacks` for those.
  */
 export function compile(input?: CompileInput): CompileOutput {
+  warnFallbackBinding()
   return binding.compile(input)
 }
 
@@ -109,6 +110,19 @@ function assertNativeBinding(callbacks: ProjectCallbacks, hooks: ProjectHooks | 
   )
 }
 
+let warnedFallback = false
+
+/** Warn on first use rather than at import, so type-only and `getBindingInfo` imports stay silent. */
+function warnFallbackBinding(): void {
+  if (binding !== fallback || warnedFallback) return
+  warnedFallback = true
+  process.emitWarning(
+    `Could not load the native @pandacss/compiler binding for ${process.platform}-${process.arch}, so Panda will emit empty CSS. ` +
+      `Reinstall your dependencies to fetch the platform package, or run \`pnpm --filter @pandacss/compiler build:native\` in a source checkout.`,
+    { code: 'PANDA_COMPILER_FALLBACK' },
+  )
+}
+
 function build(config: SerializedConfig, callbacks: ProjectCallbacks, options?: CompilerOptions): NativeCompiler {
   assertProjectCallbacks(config, callbacks)
   assertProjectHooks(options?.hooks, callbacks)
@@ -118,6 +132,7 @@ function build(config: SerializedConfig, callbacks: ProjectCallbacks, options?: 
   }
 
   assertNativeBinding(callbacks, options?.hooks)
+  warnFallbackBinding()
 
   const prepared = prepareCompilerConfig(config)
   const compiler = nativeCompilerFromConfig(
