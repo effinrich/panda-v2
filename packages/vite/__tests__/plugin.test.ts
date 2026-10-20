@@ -3,7 +3,14 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createServer, type ViteDevServer } from 'vite'
+import { getBindingInfo } from '@pandacss/compiler'
 import { pandacss } from '../src'
+
+if (!getBindingInfo().native) {
+  throw new Error(
+    'The native @pandacss/compiler binding is missing, so these tests would time out on empty CSS. Run `pnpm --filter @pandacss/compiler build:native` first.',
+  )
+}
 
 const CONFIG = `export default {
   outdir: 'styled-system',
